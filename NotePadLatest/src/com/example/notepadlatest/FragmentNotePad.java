@@ -12,12 +12,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class FragmentNotePad extends Fragment {
 	TextView Notepadtitle;
-	//NotePadEditText Notepadtext;
+	NotePadEditText Notepadtext;
 	Button notepadsave;
 	DataBaseHelperAdapter dbhelperadapter;
 	SQLiteDatabase sqldatabase;
@@ -27,10 +27,18 @@ public class FragmentNotePad extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
+		dbhelperadapter = new DataBaseHelperAdapter(getActivity());
+		
 		View v = inflater.inflate(R.layout.fragmentnotes, container,false);
 		Notepadtitle = (TextView) v.findViewById(R.id.notepadtitle);
-		//Notepadtext = (NotePadEditText) v.findViewById(R.id.note_edit_text);
+		Notepadtext = (NotePadEditText) v.findViewById(R.id.note_edit_text);
+		
+		String NotePadText = getNotePadtext();
+		Notepadtext.setText(NotePadText);
+		
 		notepadsave = (Button) v.findViewById(R.id.notepadsave);
+		
+		
 		
 		//@@@@@@@@@@@@@@@@@@
 		
@@ -43,20 +51,19 @@ public class FragmentNotePad extends Fragment {
 		return v;
 	}
 	
-	
-	
-
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
+		
+		
 		//dbhelperadapter = new DataBaseHelperAdapter(getActivity()); 
 		notepadsave.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				//insertData();
+				//TODO Auto-generated method stub
+				insertData();
 				
 				
 			}
@@ -64,13 +71,14 @@ public class FragmentNotePad extends Fragment {
 			
 		});
 	}
-/*public void insertData(){
+public void insertData(){
 	String Title = Notepadtitle.getText().toString();
 	String Text =  Notepadtext.getText().toString();
 	
 	long id = dbhelperadapter.insertData(Title, Text);
 	
-String U_id =  dbhelperadapter.getUid(Title,Text);
+     String U_id =  dbhelperadapter.getUid(Title,Text);
+     Log.d("harshaInsertUid", U_id + "hello");
 	
 	prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 	
@@ -81,15 +89,32 @@ String U_id =  dbhelperadapter.getUid(Title,Text);
     
     
     
-    
+    Log.d("harshaprefinsert", prefs.getString(Integer.toString(listviewnumber),"") + "hello");
 	if(id < 0){
 		Log.d("Error", "error");
+		Toast.makeText(getActivity(), "Error" + id, Toast.LENGTH_SHORT).show();
 	}
 	else
 	{
-		Log.d("Okay", "Okay");
+		Toast.makeText(getActivity(), "success" + id, Toast.LENGTH_SHORT).show();
 	}
-}*/
+}
+
+
+private String getNotePadtext() {
+	// TODO Auto-generated method stub
+	int uid=-1;
+	prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+	if(prefs.contains(Integer.toString(listviewnumber))){
+		Log.d("harshashow","Test");
+		Log.d("harshashow",prefs.getString(Integer.toString(listviewnumber),"") + "hello");
+		uid = Integer.parseInt(prefs.getString(Integer.toString(listviewnumber),""));
+	}
+	String result = dbhelperadapter.getNotePadText(uid);
+	Log.d("Uid", result);
+	
+	return result;
+}
 
 /*public void getUIDSpecificToTextandTitle(){
 	String result = dbhelperadapter.getUid("Text4","Test4");

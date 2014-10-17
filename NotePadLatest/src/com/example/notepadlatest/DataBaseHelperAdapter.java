@@ -91,7 +91,7 @@ public class DataBaseHelperAdapter {
 			int cid = cursor.getInt(index);
 
 			
-			buffer.append(cid + "\n");
+			buffer.append(Integer.toString(cid));
 
 		}
 		Log.d("buffer", buffer.toString());
@@ -99,6 +99,30 @@ public class DataBaseHelperAdapter {
         
 	}
 
+	
+	public String getNotePadText(int Uid)
+
+	{
+		SQLiteDatabase sqldb = dbhelper.getWritableDatabase();
+		String[] columns = { dbhelper.Note_Text };
+
+		Cursor cursor = sqldb.query(dbhelper.TABLE_NAME, columns,
+				dbhelper.U_ID + " = '" + Uid + "'", null, null, null,
+				null);
+		StringBuffer buffer = new StringBuffer();
+		while (cursor.moveToNext()) {
+			
+			int index = cursor.getColumnIndex(dbhelper.Note_Text);
+			String Text_Note = cursor.getString(index);
+
+			buffer.append(Text_Note);
+
+		}
+		return buffer.toString();
+
+	}
+
+	
 	public static class DataBaseHelper extends SQLiteOpenHelper {
 		private static final String DATABASE_NAME = "NotePAD_TEST5";
 		private static final String TABLE_NAME = "NotepadText";
