@@ -1,0 +1,22 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.sample_fb"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="19" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <meta-data andorid:name="com.facebook.sdk.ApplicationId" android:value=@string/facebook_app_id >
+            
+</meta-data>        
+    </application>
+    
+    <uses-permission android:name="android.permission.INTERNET"/>
+
+</manifest>

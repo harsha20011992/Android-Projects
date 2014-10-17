@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">LoginExampleUsingPrefence</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+
+    <string name="LabelName">Name:</string>
+    
+    <string name="InputName">Enter your Name Here</string>
+    
+    
+    <string name="LabelPassword">Password:</string>
+    
+    <string name="InputPassword">Enter your Password Here</string>
+    
+    <string name="PrefName">UserName</string>
+    
+    <string name="UserTitle">UserName</string>
+    
+    <string name="PrefNameSummary">Change the userName</string>
+    
+    <string name="PrefPassword">Password</string>
+    
+    <string name="PrefPasswordTitle">Password</string>
+    
+    <string name="PrefPasswordSummary">Enter the passwrod here</string>
+</resources>

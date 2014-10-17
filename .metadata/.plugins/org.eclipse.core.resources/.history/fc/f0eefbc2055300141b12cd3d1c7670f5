@@ -1,0 +1,22 @@
+package com.example.notepadlatest;
+
+import android.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+
+public class FragmentDetails extends Fragment{
+
+	ListView l1;
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		View view = inflater.inflate(R.layout.fragment_main,container,false);
+		l1 = (ListView) view.findViewById(R.id.listView1);
+		return view;
+	}
+
+}

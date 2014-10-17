@@ -1,0 +1,54 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+     
+        <EditText
+            android:id="@+id/DisplayDownloadUrl"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="" />
+     
+     
+    
+     <Button
+            android:id="@+id/downloadImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/downloadbutton" />
+     
+     
+     <LinearLayout 
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:orientation="vertical"
+          android:visibility="gone"
+          android:id="@+id/loadingsection" >
+         
+         <TextView 
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:text="Downloading"/>
+         
+         <ProgressBar
+         android:id="@+id/progressBar1"
+         style="?android:attr/progressBarStyleHorizontal"
+         android:layout_width="fill_parent"
+         android:layout_height="wrap_content" 
+         android:indeterminate="true"/>
+         
+         
+                  
+     </LinearLayout>
+
+     
+     <ListView
+         android:id="@+id/listView1"
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content" >
+     </ListView>
+   
+</LinearLayout>

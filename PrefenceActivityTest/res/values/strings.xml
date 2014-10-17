@@ -1,0 +1,17 @@
+<resources>
+
+    <string name="app_name">PrefenceActivityTest</string>
+
+    <string name="PrefName">Name</string>
+
+    <string name="Title">Name</string>
+
+    <string name="PrerNameSummary">Plese enter the Name</string>
+
+    <string name="PrefPasswordName">Password</string>
+    
+    <string name="PrefPasswordTitle">Password</string>
+
+    <string name="PrefPasswordSummary">Please enter the password</string>
+
+</resources>

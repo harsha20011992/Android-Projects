@@ -1,0 +1,52 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+   	android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+   
+<LinearLayout 
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:orientation="horizontal" >
+    
+    <TextView android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:id="@+id/LabelName"
+    android:text="@string/LabelName"   />
+    
+    
+    <EditText android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:id="@+id/EditName"
+    android:text="@string/InputName"   />
+    
+</LinearLayout>
+
+<LinearLayout 
+    android:layout_height="wrap_content"
+    android:layout_width="wrap_content"
+    android:orientation="horizontal" >
+    
+    <TextView android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:id="@+id/LabelPassword"
+    android:text="@string/LabelPassword"   />
+    
+    
+    <EditText android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:id="@+id/EditPassword"
+    android:text="@string/InputPassword"   />
+    
+</LinearLayout>
+
+  <Button android:layout_width="wrap_content"
+    android:layout_height="wrap_content" 
+    android:id="@+id/ButtonSubmit"
+    android:text="Submit"   />
+
+
+
+
+
+</LinearLayout>

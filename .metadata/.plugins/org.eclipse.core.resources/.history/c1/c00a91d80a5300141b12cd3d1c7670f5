@@ -1,0 +1,26 @@
+package com.example.notepadlatest;
+
+import android.app.Activity;
+import android.app.Fragment;
+import android.content.Intent;
+import android.os.Bundle;
+
+public class AnotherActivity extends Activity {
+
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onCreate(savedInstanceState);
+		setContentView(R.layout.activity_notepad);
+		
+		Intent intent = getIntent();
+		int index = intent.getIntExtra("index", 0);
+		FragmentNotePad f2 = (FragmentNotePad) getFragmentManager().findFragmentById(R.id.fragment2);
+		if(f2 != null){
+			f2.changetext(index);
+		}
+	}
+	
+	
+
+}

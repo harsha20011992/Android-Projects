@@ -1,0 +1,31 @@
+package com.example.notepadlatest;
+
+import android.app.Fragment;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+
+public class FragmentNotePad extends Fragment {
+	TextView Notepadtitle;
+	EditText Notepadtext;
+	Button notepadsave;
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		View v = inflater.inflate(R.layout.fragmentnotes, container,false);
+		Notepadtitle = (TextView) v.findViewById(R.id.notepadtitle);
+		Notepadtext = (EditText) v.findViewById(R.id.notepadtext);
+		notepadsave = (Button) v.findViewById(R.id.notepadsave);
+		
+		return v;
+	}
+
+	public void changetext(int index){
+		String[] title = getResources().getStringArray(R.id.notepadtext);
+	}
+}

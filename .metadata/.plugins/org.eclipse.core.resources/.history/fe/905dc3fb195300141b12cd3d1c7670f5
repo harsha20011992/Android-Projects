@@ -1,0 +1,36 @@
+package com.example.notepadlatest;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+public class DataBaseHelper extends SQLiteOpenHelper {
+
+	private static final String DATABASE_NAME = "NotePAD_TEST";
+	private static final String TABLE_NAME = "NotepadText";
+	private static final int DATABASE_VERSION = 1;
+	private static final String U_ID = "_id";
+	private static final String Note_Text = "Note_Text";
+	private static final String Note_Title = "Note_Title";
+    private Context context;
+	private static final String CREATE_TABLE = "CREATE TABLE "
+			+ TABLE_NAME
+			+ " ("+U_ID+" INTEGER PRIMARY KEY AUTO INCREMENT, "+Note_Title+" VARCHAR(255) , "+Note_Text+" VARCHAR(255)); ";
+	public DataBaseHelper(Context context1) {
+		super(context1, DATABASE_NAME, null, DATABASE_VERSION);
+        context = context1;
+	}
+
+	@Override
+	public void onCreate(SQLiteDatabase db) {
+		// TODO Auto-generated method stub
+		db.execSQL(CREATE_TABLE);
+	}
+
+	@Override
+	public void onUpgrade(SQLiteDatabase arg0, int arg1, int arg2) {
+		// TODO Auto-generated method stub
+
+	}
+
+}

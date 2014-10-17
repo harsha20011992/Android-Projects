@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">DownloadImageViaThread</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+
+     <string-array name="downloadURLs">
+        <item>http://i.istockimg.com/cms/resources/images/HomePage/Tiles/tile_people.jpg</item>
+        <item>Ghost Fishing</item>
+        <item>Marsh Damage</item>
+        <item>Navigational Hazard</item>
+        <item>Shellfish Damage</item>
+        <item>Waste Pollution</item>
+        <item>Wildlife Entanglement</item>
+        <item>Other</item>
+    </string-array>
+    
+     <string name="downloadbutton">DownloadImage</string>
+    
+</resources>

@@ -1,0 +1,54 @@
+package com.example.notepadedittext;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.widget.EditText;
+
+public class NotePadView extends EditText{
+	Paint paint;
+	public NotePadView(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+		paint = new Paint();
+	    paint.setStyle(Paint.Style.STROKE);
+	    paint.setStrokeWidth(3);
+	    paint.setColor(0xFF0000);
+	}
+
+	public NotePadView(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		// TODO Auto-generated constructor stub
+		paint = new Paint();
+	    paint.setStyle(Paint.Style.STROKE);
+	    paint.setStrokeWidth(3);
+	    paint.setColor(0xFF0000);
+	}
+
+	public NotePadView(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		// TODO Auto-generated constructor stub
+	
+	    //this Contructure required when you are using this view in xml 
+		paint = new Paint();
+	    paint.setStyle(Paint.Style.STROKE);
+	    paint.setStrokeWidth(3);
+	    paint.setColor(0xFF0000);
+	}
+	
+	
+	@Override
+	protected void onDraw(Canvas canvas) {
+
+	    Log.d("NotePadEditView", "Calling onDraw()"); // These log messages are displaying
+	       canvas.drawLine(0, 0, 50, 50, paint); // just some random stuff so we know when we are done. (Note: these are not displaying - what's up with that???)
+	       canvas.drawText("Hello, World", 30, 30, paint);
+	       super.onDraw(canvas);
+
+	}
+	
+
+}

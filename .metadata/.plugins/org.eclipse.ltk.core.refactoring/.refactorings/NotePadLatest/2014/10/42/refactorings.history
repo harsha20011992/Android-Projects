@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;com.example.notepadlatest.DataBaseHelper&apos; to &apos;DataBaseHelperAdapter&apos;&#x0D;&#x0A;- Original project: &apos;NotePadLatest&apos;&#x0D;&#x0A;- Original element: &apos;com.example.notepadlatest.DataBaseHelper&apos;&#x0D;&#x0A;- Renamed element: &apos;com.example.notepadlatest.DataBaseHelperAdapter&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;DataBaseHelper&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;com.example.notepadlatest{DataBaseHelper.java[DataBaseHelper" matchStrategy="1" name="DataBaseHelperAdapter" qualified="false" references="true" similarDeclarations="false" stamp="1413237647373" textual="false" version="1.0"/>
+</session>
