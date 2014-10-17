@@ -16,7 +16,7 @@ public class AnotherActivity extends Activity {
 		Intent intent = getIntent();
 		int index = intent.getIntExtra("index", 0);
 		
-		Log.d("Activity0", "In Anotheractivity: " + index );
+		Log.d("Activity2", "In Anotheractivity: " + index );
 		
 		FragmentNotePad f2 = (FragmentNotePad) getFragmentManager().findFragmentById(R.id.fragment2);
 		if(f2 != null){
