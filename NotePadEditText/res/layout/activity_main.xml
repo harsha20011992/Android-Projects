@@ -21,10 +21,14 @@
             android:gravity="top"
             android:inputType="textMultiLine"
             android:singleLine="false" />
-   <Button
+
+   <com.example.notepadedittext.MyButton
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Button" />
+        android:background="@android:color/transparent"
+        android:text="Button" 
+        android:textColor="@android:color/white"
+        android:layout_gravity="center"/>
 </LinearLayout>
 

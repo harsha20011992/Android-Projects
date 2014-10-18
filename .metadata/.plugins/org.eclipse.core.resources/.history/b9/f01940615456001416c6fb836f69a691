@@ -1,0 +1,53 @@
+package com.example.notepadedittext;
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Paint.Style;
+import android.util.AttributeSet;
+import android.widget.Button;
+
+public class MyButton extends Button{
+	Paint paint;
+	public MyButton(Context context) {
+		super(context);
+		// TODO Auto-generated constructor stub
+		paint = new Paint();
+        paint.setColor(Color.BLUE);
+        paint.setStrokeWidth(10);
+        paint.setStyle(Style.FILL);
+	}
+
+	public MyButton(Context context, AttributeSet attrs, int defStyle) {
+		super(context, attrs, defStyle);
+		// TODO Auto-generated constructor stub
+		paint = new Paint();
+        paint.setColor(Color.BLUE);
+        paint.setStrokeWidth(10);
+        paint.setStyle(Style.FILL);
+		
+	}
+
+	public MyButton(Context context, AttributeSet attrs) {
+		super(context, attrs);
+		// TODO Auto-generated constructor stub
+		paint = new Paint();
+        paint.setColor(Color.BLUE);
+        paint.setStrokeWidth(10);
+        paint.setStyle(Style.FILL);
+	}
+	
+	 @Override
+     protected void onDraw(Canvas canvas) {
+
+            
+            int width = getWidth();
+            int height = getHeight();
+            //canvas.drawCircle(width/2, height/2, height/3, paint);
+            canvas.drawRect(0, 0, width-10, height-10, paint);
+            
+
+      } 
+
+}
