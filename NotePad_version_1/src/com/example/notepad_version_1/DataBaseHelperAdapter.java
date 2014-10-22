@@ -167,6 +167,15 @@ public class DataBaseHelperAdapter {
 		return buffer.toString();
 
 	}
+	
+	public int deleteRow(int index){
+		//DELETE * from TABLE_NAME WHERE U_ID = index;
+		SQLiteDatabase sqldb = dbhelper.getWritableDatabase();
+		//String[] whereargs = {Integer.toString(index)};
+		String[] whereargs = {Integer.toString(index)};
+		int count = sqldb.delete(dbhelper.TABLE_NAME, dbhelper.U_ID + "=?", whereargs);
+		return count;
+	}
 
 	
 	public static class DataBaseHelper extends SQLiteOpenHelper {

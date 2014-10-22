@@ -28,8 +28,13 @@ public class FragmentNotePad extends Fragment {
 	DataBaseHelperAdapter dbhelperadapter;
 	SQLiteDatabase sqldatabase;
 	int listviewnumber,nextvalue_global;
-	String Title_from_Db,Note_from_Db;
-	Boolean isInsert_global;
+	/*The initialization of these strings has to be qualified in appropriate methods
+	like oncreate() or onstart() after studying  fragment methods*/ 
+	String Title_from_Db="",Note_from_Db="";
+	
+	/*The initialization of these boolean has to be qualified in appropriate methods
+	like oncreate() or onstart() after studying  fragment methods*/
+	Boolean isInsert_global=false,isTransactionviaChangeText=false;
 	SharedPreferences prefs;
 	AfterInsertDataInterface A1interface;
 	//Boolean TextFromDbAvailable;
@@ -44,6 +49,7 @@ public class FragmentNotePad extends Fragment {
 		View v = inflater.inflate(R.layout.fragementnotes, container,false);
 		Notepadtitle = (TextView) v.findViewById(R.id.notepadtitle);
 		Notepadtext = (NotePadEditText) v.findViewById(R.id.note_edit_text);
+		
 		
 		
 		//String NotePadText = getNotePadtext();
@@ -75,6 +81,7 @@ public class FragmentNotePad extends Fragment {
 	}
 	
 	public void changetext(int index,int nextValue,Boolean isInsert) {
+		isTransactionviaChangeText = true;
 		// TODO Auto-generated method stub
 		//prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		//Log.d("Test_19","insidechangeText" + this.toString() + "activityName" + getActivity().toString() + "\n listviewnumer:" + listviewnumber);
@@ -94,6 +101,7 @@ public class FragmentNotePad extends Fragment {
 			//Log.d("New","insidechangeText isInsert FN" );
 			//Log.d("New","insidechangeText isInsert FN" + " \t listviewnumer: " + listviewnumber + " \t nextglobalvale: " + nextvalue_global);
 			Notepadtitle.setText("Note" + nextvalue_global);
+			Notepadtext.setText("");
 			Log.d("Test_Value","insidechangeText --> isInsert = true \t " + "listviewnumer: " + listviewnumber + "\t nextvalue: "  + nextvalue_global +"\t isinsert: " + isInsert);
 		}
 		
@@ -145,15 +153,36 @@ public class FragmentNotePad extends Fragment {
 		}
 		else{
 			Log.d("Test_edit_before", " \t NoteFromDB: " + Note_from_Db + "\t Text: " + Text + "\t Title_from_Db: " + Title_from_Db + " \t Title: " + Title);
-			
 			if(Note_from_Db.equals(Text) && Title_from_Db.equals(Title)){
+				
 				Log.d("Test_edit", "insert not done No change done");
 			}
 			else{
+				
+				if(!isTransactionviaChangeText){
+					Log.d("Test_Value_insert_edit_not_via_changeText","inside isTransactionviaChangeText = false");
+					prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+					nextvalue_global = prefs.getInt("NextValue", 0);
+					
+					listviewnumber = A1interface.getlistViewCount();
+					Log.d("Test_Value_insert_edit_not_via_changeText", "After getting valuses \t " + "(listviewnumber): " + listviewnumber + "(NextValue): " + prefs.getInt(Integer.toString(listviewnumber), 0));
+					id = dbhelperadapter.insertData(nextvalue_global,Title, Text);
+					
+					prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+					
+					Editor editor = prefs.edit();
+					editor.putInt(Integer.toString(listviewnumber), nextvalue_global);
+					editor.putInt("NextValue", nextvalue_global + 1);
+				    editor.commit();
+				    Log.d("Test_Value_insert_edit_not_via_changeText", "After Insert into prefs \t " + "Key(listview): " + listviewnumber + "vaue(NextValue): " + prefs.getInt(Integer.toString(listviewnumber), 0));
+				    
+				}
+				else{
 				id = dbhelperadapter.insertData(prefs.getInt(Integer.toString(listviewnumber), 0),Title, Text);
 				Log.d("Test_edit", "insert edit \t Key: " + listviewnumber +   "Value: " + prefs.getInt(Integer.toString(listviewnumber), 0) + " \t nextValue: " + nextvalue_global);
 				Title_from_Db = Title;
 				Note_from_Db = Text;
+				}
 			}
 			
 		}
@@ -202,6 +231,12 @@ public class FragmentNotePad extends Fragment {
 	public void GetTextandTitleForGivenIndex(int int_U_id){
 		Log.d("Test","inside GetTextAndTitle.." + "\t int_U_id: " + int_U_id);
 		String TitleAndText = dbhelperadapter.getNotePadText(int_U_id);
+		Log.d("Test","inside GetTextAndTitle.." + "\t TitleandText: " + TitleAndText + "Test");
+		if(TitleAndText.equals("")){
+			Notepadtitle.setText("Enter NoteTitle here");
+			Notepadtext.setText("Enter the Note here");
+		}
+		else{
 		Log.d("Test_string","inside GetTextAndTitle.." + "\t TitleandText " + TitleAndText);
 		String[] TitleAndText1 = TitleAndText.split(";");
 		Log.d("Test","inside GetTextAndTitle.." + "\t Title: " + TitleAndText1[0] + "\t Text: " + TitleAndText1[1] );
@@ -209,11 +244,12 @@ public class FragmentNotePad extends Fragment {
 		Title_from_Db = TitleAndText1[0];
 		Notepadtext.setText(TitleAndText1[1]);
 		Note_from_Db = TitleAndText1[1];
+		}
 	}
 	
 	
 	public interface AfterInsertDataInterface{
-		public void changelistView(String Title);
+		public int getlistViewCount();
 	}
 	
 
@@ -221,7 +257,8 @@ public class FragmentNotePad extends Fragment {
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
-		GetTextandTitleForGivenIndex(0);
+		
+		//GetTextandTitleForGivenIndex(0);
 		/*Log.d("Activity1_fragmentdetails", "onActivitycreated " + this.toString() + " activityname " + getActivity().toString());
 		
 		if(listviewnumber == -1)

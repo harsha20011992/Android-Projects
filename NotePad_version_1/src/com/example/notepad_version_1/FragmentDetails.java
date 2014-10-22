@@ -4,16 +4,19 @@ package com.example.notepad_version_1;
 
 import java.util.ArrayList;
 
-
-import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.CursorAdapter;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +24,10 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.support.v4.widget.SimpleCursorAdapter;
 
 
 public class FragmentDetails extends Fragment{
@@ -38,6 +41,7 @@ public class FragmentDetails extends Fragment{
 	SQLiteDatabase sqldatabase;
 	SimpleCursorAdapter c;
 	Cursor cursor;
+	SharedPreferences prefs;
 	DetailsListBroadCastListener Dbroadcast1;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -97,8 +101,11 @@ public class FragmentDetails extends Fragment{
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
 		Dbroadcast1.setFragment(this);
-		Log.d("Activity1_fragmentdetails", "onActivitycreated " + this.toString() + " activityname " + getActivity().toString());
 		
+		Log.d("Activity1_fragmentdetails", "onActivitycreated " + this.toString() + " activityname " + getActivity().toString());
+		//communicator.respond(-1, l1.getCount() );
+		Boolean requestFocusforfragment1 = getActivity().findViewById(R.id.fragment1).requestFocus();
+		Log.d("Test_Requestfocus", "Boolean Value: " + requestFocusforfragment1 );
 		addNotes.setOnClickListener(new OnClickListener() {
 			
 			@Override
@@ -108,8 +115,12 @@ public class FragmentDetails extends Fragment{
 				Log.d("New", "on add button click\t list count: " + Integer.toString(l1.getCount()));
 				communicator.respond(-1,l1.getCount());
 				
+				
 			}
+		
 		});
+		
+		
 		
 		cursor = dbhelperadapter.getAllCursorDetails();
 		if(cursor!=null){
@@ -120,15 +131,79 @@ public class FragmentDetails extends Fragment{
 			c.notifyDataSetChanged();	
 		}
 		
+		l1.setOnItemLongClickListener(new OnItemLongClickListener() {
+
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int index, long arg3) {
+				// TODO Auto-generated method stub
+				final int index1 = index;
+				//Toast.makeText(getActivity(), "You Pressed item" + (index +1) , Toast.LENGTH_SHORT).show();
+				AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+				builder1.setMessage("Do you want to delete this notepad");
+				builder1.setCancelable(true);
+				builder1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int arg1) {
+						// TODO Auto-generated method stub
+						Log.d("Test_dialog","Clicked yes: " + index1);
+						DeleteCorrespondingRow(index1);
+						
+						dialog.cancel();
+					}
+
+					
+				});
+				
+				
+				builder1.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface dialog, int arg1) {
+						// TODO Auto-generated method stub
+						Log.d("Test_dialog","Clicked No");
+						dialog.cancel();
+					}
+				});
+				
+				AlertDialog dialog1 = builder1.create();
+				dialog1.show();
+				
+				return false;
+			}
+		});
+		
 	}
 
-
+	private void DeleteCorrespondingRow(int index1) {
+		// TODO Auto-generated method stub
+		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+		
+		if(prefs.contains(Integer.toString(index1)))
+		{
+			//delete the row in db starts here
+			int count = dbhelperadapter.deleteRow(prefs.getInt(Integer.toString(index1), 0));
+			Log.d("Test_delete_comit", "rows affected: " + count);
+			//delete the row in db starts here
+			cursor.requery();
+			c.notifyDataSetChanged();
+			//delete the corresponding prefs here
+			for(int i=index1;i < l1.getCount();i++){
+				Editor edit = prefs.edit();
+				edit.putInt(Integer.toString(i), prefs.getInt(Integer.toString(i+1), 0));
+				Log.d("Test_delete_comit", " \t listnumber: " + i + " \t Vaue(prefsValue): " + prefs.getInt(Integer.toString(i+1), 0) + " \t listviewcount" + l1.getCount() );
+				edit.commit();
+			}//delete the corresponding prefs here
+		}
+	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(requestCode, resultCode, data);
 		Log.d("Activity1_fragmentdetails", "onActivityresult " + this.toString() + " activityname " + getActivity().toString());
+		
 	}
 
 

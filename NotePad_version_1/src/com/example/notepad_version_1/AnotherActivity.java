@@ -106,10 +106,13 @@ public class AnotherActivity extends ActionBarActivity implements FragmentNotePa
 	}
 
 	@Override
-	public void changelistView(String Title) {
+	public int getlistViewCount() {
 		// TODO Auto-generated method stub
-		FragmentDetails.NotesStringArray.add(Title);
-        FragmentDetails.NotesName.notifyDataSetChanged();
+		//
+		//changelistView
+		//FragmentDetails.NotesStringArray.add(Title);
+        //FragmentDetails.NotesName.notifyDataSetChanged();
+		return FragmentDetails.l1.getCount();
 	}
 	
 	

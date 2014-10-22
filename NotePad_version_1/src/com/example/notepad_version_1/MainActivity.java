@@ -219,10 +219,9 @@ public class MainActivity extends ActionBarActivity implements FragmentDetails.C
 
 
 	@Override
-	public void changelistView(String Title) {
+	public int getlistViewCount() {
 		// TODO Auto-generated method stub
-		f1.NotesStringArray.add(Title);
-        f1.NotesName.notifyDataSetChanged();	
+		return f1.l1.getCount();	
 	}
 	
 	
