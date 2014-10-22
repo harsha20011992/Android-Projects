@@ -16,6 +16,13 @@ public class DataBaseHelperAdapter {
 	public DataBaseHelperAdapter(Context context) {
 		dbhelper = new DataBaseHelper(context);
 	}
+	
+	public String[] returnColumns(){
+		
+		String[] columns = {DataBaseHelper.U_ID,DataBaseHelper.Note_Title,DataBaseHelper.Note_Text};
+		
+		return columns;
+	}
 
 	public long insertData(int U_id,String title, String text) {
 		SQLiteDatabase sqldb = dbhelper.getWritableDatabase();
@@ -52,6 +59,38 @@ public class DataBaseHelperAdapter {
 		}
 
 		return buffer.toString();
+	}
+
+	
+	public Cursor getAllCursorDetails() {
+		SQLiteDatabase sqldb = dbhelper.getWritableDatabase();
+		String[] columns = { dbhelper.U_ID, dbhelper.Note_Text,
+				dbhelper.Note_Title };
+
+		Cursor cursor = sqldb.query(dbhelper.TABLE_NAME, columns, null, null,
+				null, null, null);
+		/*StringBuffer buffer = new StringBuffer();
+		while (cursor.moveToNext()) {
+			int index = cursor.getColumnIndex(dbhelper.U_ID);
+			int cid = cursor.getInt(index);
+
+			index = cursor.getColumnIndex(dbhelper.Note_Text);
+			String Text_Note = cursor.getString(index);
+
+			index = cursor.getColumnIndex(dbhelper.Note_Title);
+			String Title_Note = cursor.getString(index);
+
+			buffer.append(cid + " " + Text_Note + Title_Note + "\n");
+
+		}
+
+		return buffer.toString();*/
+		
+		if(cursor!= null){
+			cursor.moveToFirst();
+		}
+		
+		return cursor;
 	}
 
 	
@@ -109,7 +148,7 @@ public class DataBaseHelperAdapter {
 
 	{
 		SQLiteDatabase sqldb = dbhelper.getWritableDatabase();
-		String[] columns = { dbhelper.Note_Text };
+		String[] columns = { dbhelper.Note_Title,dbhelper.Note_Text };
 
 		Cursor cursor = sqldb.query(dbhelper.TABLE_NAME, columns,
 				dbhelper.U_ID + " = '" + Uid + "'", null, null, null,
@@ -117,11 +156,13 @@ public class DataBaseHelperAdapter {
 		StringBuffer buffer = new StringBuffer();
 		while (cursor.moveToNext()) {
 			
-			int index = cursor.getColumnIndex(dbhelper.Note_Text);
+			int index = cursor.getColumnIndex(dbhelper.Note_Title);
+			String Text_Title = cursor.getString(index);
+			
+			index = cursor.getColumnIndex(dbhelper.Note_Text);
 			String Text_Note = cursor.getString(index);
 
-			buffer.append(Text_Note);
-
+			buffer.append(Text_Title + ";" + Text_Note);
 		}
 		return buffer.toString();
 

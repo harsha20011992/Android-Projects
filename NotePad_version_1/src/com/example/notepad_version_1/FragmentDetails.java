@@ -4,12 +4,16 @@ package com.example.notepad_version_1;
 
 import java.util.ArrayList;
 
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.CursorAdapter;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +24,8 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.support.v4.widget.SimpleCursorAdapter;
+
 
 public class FragmentDetails extends Fragment{
 
@@ -28,8 +34,11 @@ public class FragmentDetails extends Fragment{
 	Communicator communicator;
 	static ArrayAdapter<String> NotesName;
 	static ArrayList<String> NotesStringArray;
-	//DataBaseHelperAdapter dbhelperadapter;
+	DataBaseHelperAdapter dbhelperadapter;
 	SQLiteDatabase sqldatabase;
+	SimpleCursorAdapter c;
+	Cursor cursor;
+	DetailsListBroadCastListener Dbroadcast1;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -42,14 +51,19 @@ public class FragmentDetails extends Fragment{
 		NotesStringArray = new ArrayList<String>();
 		//NotesStringArray[0] = "hello";
 		NotesName = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,NotesStringArray);
+		
+		dbhelperadapter = new DataBaseHelperAdapter(getActivity());
 		l1.setAdapter(NotesName);
+		Dbroadcast1 = new DetailsListBroadCastListener();
 		l1.setOnItemClickListener(new OnItemClickListener() {
-
+	    
+		
+			
 			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
+			public void onItemClick(AdapterView<?> arg0, View arg1, int index,
 					long arg3) {
 				// TODO Auto-generated method stub
-				communicator.respond(arg2,0);
+				communicator.respond(index,0);
 			}
 		});
 		return view;
@@ -82,6 +96,7 @@ public class FragmentDetails extends Fragment{
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
+		Dbroadcast1.setFragment(this);
 		Log.d("Activity1_fragmentdetails", "onActivitycreated " + this.toString() + " activityname " + getActivity().toString());
 		
 		addNotes.setOnClickListener(new OnClickListener() {
@@ -95,6 +110,16 @@ public class FragmentDetails extends Fragment{
 				
 			}
 		});
+		
+		cursor = dbhelperadapter.getAllCursorDetails();
+		if(cursor!=null){
+			String[]	from = dbhelperadapter.returnColumns();
+			int[] to = {R.id.cursor_TextU_id,R.id.cursor_TextTitle,R.id.cursor_TextNote};
+			c = new SimpleCursorAdapter(getActivity(), R.layout.detailscursorlayout, cursor, from, to, 0);
+			l1.setAdapter(c);
+			c.notifyDataSetChanged();	
+		}
+		
 	}
 
 

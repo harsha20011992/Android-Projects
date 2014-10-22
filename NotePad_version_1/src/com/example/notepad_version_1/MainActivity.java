@@ -75,50 +75,63 @@ public class MainActivity extends ActionBarActivity implements FragmentDetails.C
 		// TODO Auto-generated method stub
 		int listviewnumber;
 		Boolean isInsert;
+		//Add Notes Nextvalue generation logic starts here
 		if(index == -1){
 			Log.d("Test_18", "inside respond index=-1 start");
-			Log.d("New", "inside 'respond index=-1' start");
+			//Log.d("New", "inside 'respond index=-1' start");
+			
+			//If the first element in the prefs already exists, generate a new nextvalue starts here
 			if(prefs.contains(Integer.toString(0))){
+				Log.d("Test_18", "inside prefs contains(0) = true ");
 				nextValue = prefs.getInt("NextValue", 0);
 				//Editor edit = prefs.edit();
 			    //edit.putInt(Integer.toString(listviewsize), ++nextValue);
 			    //edit.putInt("NextValue", nextValue);
 			    //edit.commit();
 			    listviewnumber = listviewsize; 
-			    Log.d("New", "prefs contains 0\tlisviewnumber: " + Integer.toString(listviewnumber) + "\tnextvalue: " + nextValue );
-			    Log.d("Test_18", "inside respond index=-1 end\tlisviewnumber:" + Integer.toString(listviewnumber) + "\t nextvalue: " + nextValue );
+			    Log.d("Test_Value", "prefs contains(0) = true \t lisviewnumber: " + Integer.toString(listviewnumber) + " \t nextvalue: " + nextValue );
+			    //Log.d("Test_18", "inside respond index=-1 end\tlisviewnumber:" + Integer.toString(listviewnumber) + "\t nextvalue: " + nextValue );
 			    
 			}	
+			//If the first element in the prefs already exists, generate a new nextvalue ends here
+			//If the first element in the prefs does not exist, set new nextvalue = 0 starts here
 			else{
+				Log.d("Test_18", "inside prefs contains(0) = false ");
 				listviewnumber = listviewsize;
 				nextValue = 0;
-				nextValue++;
-				Log.d("New", "prefs not contains 0 \t lisviewnumber: " + Integer.toString(listviewnumber) + "\t nextvalue: " + nextValue );
+				//nextValue++;
+				//Log.d("New", "prefs not contains 0 \t lisviewnumber: " + Integer.toString(listviewnumber) + "\t nextvalue: " + nextValue );
 				//Editor edit = prefs.edit();
 			    //edit.putInt(Integer.toString(listviewsize), ++nextValue);
-			    Log.d("Test_18", "listviewsize:\t" + Integer.toString(listviewsize));
+			    //Log.d("Test_18", "listviewsize:\t" + Integer.toString(listviewsize));
 			    //Log.d("New", "prefs not contains 0 \t lisviewnumber: " + Integer.toString(listviewnumber) + "\t nextvalue: " + nextValue );
 			    //edit.putInt("NextValue", nextValue);
-			    Log.d("Test_18", "nextview:\t\t" + Integer.toString(listviewsize));
+			    //Log.d("Test_18", "nextview:\t\t" + Integer.toString(listviewsize));
 			    //edit.commit();
-			    Log.d("Test_18", "inside index=-1\tValueToBeSent:\t" + Integer.toString(listviewnumber));
+			    Log.d("Test_Value", "prefs contains(0) = false \t ValueToBeSent: \t " + "listviewnumber: " + Integer.toString(listviewnumber) + " \t nextValue: " + Integer.toString(listviewnumber));
 			    
 			}
+			//If the first element in the prefs does not exist, set new nextvalue = 0 starts here
+			
 			isInsert = true;
 			Log.d("New", "inside 'respond index=-1' end");
 		}
 		
+		//Add notes Nextvalue generation logic end here
+		
+		//Edit Notes logic starts here
 		else{
 			listviewnumber = index;
 			isInsert = false;
-			Log.d("Test_18", "index !=-1\tValueToBeSent:\t" + Integer.toString(listviewnumber));
+			Log.d("Test_Value", "index !=-1 \t ValueToBeSent: \t "  + "listviewnumber: " + Integer.toString(listviewnumber) + " \t nextValue: " + Integer.toString(listviewnumber));
 		}
+		//Edit Notes logic ends here
 		f2  = (FragmentNotePad) manager.findFragmentById(R.id.fragment2);
 		
 			if(f2 != null && f2.isVisible())
 			{
-				Log.d("Test_18", "F2!=Null and F2.isVisible:\t listviewnumber " + Integer.toString(listviewnumber) + "\tnextValue:" + nextValue + "isInsert:\t" + Boolean.toString(isInsert) );
-				Log.d("New", "F2!=Null and F2.isVisible: \t listviewnumber: " + Integer.toString(listviewnumber) + " \t nextValue: " + nextValue + "\t isInsert: " + Boolean.toString(isInsert) );
+				Log.d("Test_18", "F2!=Null and F2.isVisible:\t listviewnumber " + Integer.toString(listviewnumber) + "\t nextValue: " + nextValue + "isInsert: \t " + Boolean.toString(isInsert) );
+				//Log.d("New", "F2!=Null and F2.isVisible: \t listviewnumber: " + Integer.toString(listviewnumber) + " \t nextValue: " + nextValue + "\t isInsert: " + Boolean.toString(isInsert) );
 				f2.changetext(listviewnumber,nextValue,isInsert);
 			}
 			else

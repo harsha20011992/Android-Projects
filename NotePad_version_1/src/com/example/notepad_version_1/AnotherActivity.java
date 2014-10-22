@@ -17,7 +17,7 @@ public class AnotherActivity extends ActionBarActivity implements FragmentNotePa
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_notepad);
-		
+		Log.d("Test","Inside another activity before intent retreival" + this.toString());
 		Intent intent = getIntent();
 		int index = intent.getIntExtra("index", 0);
 		Boolean isInsert = intent.getBooleanExtra("isInsert", false);

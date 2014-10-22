@@ -3,6 +3,7 @@ package com.example.notepad_version_1;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.IntentSender.SendIntentException;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.sqlite.SQLiteDatabase;
@@ -27,6 +28,8 @@ public class FragmentNotePad extends Fragment {
 	DataBaseHelperAdapter dbhelperadapter;
 	SQLiteDatabase sqldatabase;
 	int listviewnumber,nextvalue_global;
+	String Title_from_Db,Note_from_Db;
+	Boolean isInsert_global;
 	SharedPreferences prefs;
 	AfterInsertDataInterface A1interface;
 	//Boolean TextFromDbAvailable;
@@ -75,33 +78,39 @@ public class FragmentNotePad extends Fragment {
 		// TODO Auto-generated method stub
 		//prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		//Log.d("Test_19","insidechangeText" + this.toString() + "activityName" + getActivity().toString() + "\n listviewnumer:" + listviewnumber);
-		
-		Log.d("Test_19","insidechangeText" + "\tlistviewnumer:" + listviewnumber);
+		Log.d("Test_19","insidechangeText");
+		//Log.d("Test_19","insidechangeText" + " \t listviewnumer:" + listviewnumber);
 		//Log.d("New","insidechangeText FN" + "\t listviewnumer:" + listviewnumber);
 		listviewnumber = index;
 		nextvalue_global = nextValue;
+		isInsert_global = isInsert;
 		//Log.d("Test_19","insidechangeText" + this.toString() + "activityName" + getActivity().toString() + "\n listviewnumer after asiign:" + listviewnumber + "\nnextvalue:\t"  + nextvalue_global +"\tisinsert:\t" + isInsert);
-		Log.d("New","insidechangeText FN" + " \t listviewnumer: " + listviewnumber + " \t nextglobalvale: " + nextvalue_global);
-		Log.d("Test_19","insidechangeText\t" + "listviewnumer after asiign: " + listviewnumber + "\tnextvalue: "  + nextvalue_global +"\tisinsert: " + isInsert);
+		//Log.d("New","insidechangeText FN" + " \t listviewnumer: " + listviewnumber + " \t nextglobalvale: " + nextvalue_global);
+		Log.d("Test_Value","insidechangeText \t " + "listviewnumer: " + listviewnumber + "\t nextvalue: "  + nextvalue_global +"\t isinsert: " + isInsert);
 		if(isInsert){
-			Log.d("Test_19","inside changeText:\t isInsert " + isInsert);
+			Log.d("Test_19","inside changeText: \t isInsert " + isInsert);
 			//Log.d("Test_19","prefsValue\t" +  prefs.getInt(Integer.toString(listviewnumber), 0) +this.toString() + "activityName" + getActivity().toString());
 			//Notepadtitle.setText("Note" + prefs.getInt(Integer.toString(listviewnumber), 0));
 			//Log.d("New","insidechangeText isInsert FN" );
-			Log.d("New","insidechangeText isInsert FN" + " \t listviewnumer: " + listviewnumber + " \t nextglobalvale: " + nextvalue_global);
+			//Log.d("New","insidechangeText isInsert FN" + " \t listviewnumer: " + listviewnumber + " \t nextglobalvale: " + nextvalue_global);
 			Notepadtitle.setText("Note" + nextvalue_global);
+			Log.d("Test_Value","insidechangeText --> isInsert = true \t " + "listviewnumer: " + listviewnumber + "\t nextvalue: "  + nextvalue_global +"\t isinsert: " + isInsert);
 		}
 		
 		else
 		{
-		Log.d("Title", "Before SetText");
-		String[] title = getResources().getStringArray(R.array.notesname);
-		Log.d("Title", title[index]);
-		Notepadtitle.setText(title[index]);
-		
-					String NotePadText = getNotePadtext();
-			Notepadtext.setText(NotePadText);
-			
+			//int newIndex = 0;
+			prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+			Log.d("Test_22","inside changeText: \t isInsert " + isInsert + " \t indexValue: " + listviewnumber);
+			//newIndex = index + 1; 
+			//Log.d("Test_22","inside changeText:\t isInsert " + isInsert + " \t NewindexValue: " + newIndex);
+			if(prefs.contains(Integer.toString(index))){
+				//Log.d("Test_22","inside changeText:-->prefs contains true  \t isInsert " + isInsert + " \t indexValue: " + newIndex);
+				int int_U_id = prefs.getInt(Integer.toString(listviewnumber), 0);
+				Log.d("Test_22","inside changeText:-->prefs contains true  \t isInsert " + isInsert + " \t U_id: " + int_U_id);
+				GetTextandTitleForGivenIndex(int_U_id);
+				
+			}
 		}
 	}
 	
@@ -115,45 +124,93 @@ public class FragmentNotePad extends Fragment {
 	
 	public void insertData(){
 		String Title = Notepadtitle.getText().toString();
-		String Text =  Notepadtext.getText().toString();
-		Log.d("Test_18", "insert Data\tlistviewnumber" + listviewnumber + "\tnextValue: " + nextvalue_global);
-		Log.d("New", "insert Data \t listviewnumber: " + listviewnumber + " \t nextValue: " + nextvalue_global);
-		long id = dbhelperadapter.insertData(nextvalue_global,Title, Text);
+		String Text =  Notepadtext.getText().toString();		
+		Log.d("Test_Value", "insert Data \t listviewnumber" + listviewnumber + "\t nextValue: " + nextvalue_global);
+		Long id = null;
+		if(isInsert_global){
+			id = dbhelperadapter.insertData(nextvalue_global,Title, Text);
+			
+			prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+			
+			Editor editor = prefs.edit();
+			editor.putInt(Integer.toString(listviewnumber), nextvalue_global);
+			editor.putInt("NextValue", nextvalue_global + 1);
+		    editor.commit();
+		    Log.d("Test_Value_insert_edit", "After Insert into prefs \t " + "Key(listview): " + listviewnumber + "vaue(NextValue): " + prefs.getInt(Integer.toString(listviewnumber), 0));
+		    if(id!=null){
+		    	isInsert_global = false;	
+		    }
+		    
+		    Log.d("Test_insert", "insert Data \t listviewnumber: " + listviewnumber + " \t nextValue: " + nextvalue_global + " \t isInsert_global" + isInsert_global);
+		}
+		else{
+			Log.d("Test_edit_before", " \t NoteFromDB: " + Note_from_Db + "\t Text: " + Text + "\t Title_from_Db: " + Title_from_Db + " \t Title: " + Title);
+			
+			if(Note_from_Db.equals(Text) && Title_from_Db.equals(Title)){
+				Log.d("Test_edit", "insert not done No change done");
+			}
+			else{
+				id = dbhelperadapter.insertData(prefs.getInt(Integer.toString(listviewnumber), 0),Title, Text);
+				Log.d("Test_edit", "insert edit \t Key: " + listviewnumber +   "Value: " + prefs.getInt(Integer.toString(listviewnumber), 0) + " \t nextValue: " + nextvalue_global);
+				Title_from_Db = Title;
+				Note_from_Db = Text;
+			}
+			
+		}
 		
+		//Log.d("New", "insert Data \t listviewnumber: " + listviewnumber + " \t nextValue: " + nextvalue_global);
 		
-	     String U_id =  dbhelperadapter.getUid(Title,Text);
-	     Log.d("Test_18", "insert data id:\t" + id);
-	     Log.d("New", "insert data \t id: " + id + " \t U_id: " + U_id);
-	    Toast.makeText(getActivity(), "id: " + id + "U_id: " + U_id, Toast.LENGTH_SHORT).show();
-		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
-		
-		Editor editor = prefs.edit();
-		editor.putInt(Integer.toString(listviewnumber), nextvalue_global);
-		editor.putInt("NextValue", nextvalue_global + 1);
-	    editor.commit();
+		Log.d("Test_outside","test outside");
+		//int success1 = id.compareTo(null);
+		//int success2 = -1;
+		//Log.d("Test_outside","test outside after compare");
+		if(id == null || id < 0 ){
+			Log.d("Test_error", "error_if");
+			Toast.makeText(getActivity(), "Error_id", Toast.LENGTH_SHORT).show();
+		   	}
+		else{
+			//Log.d("Test_error", "error_else");
+			Log.d("Test_value_insert_edit", "insert data id: " + id);
+			String U_id =  dbhelperadapter.getUid(Title,Text);
+			//Toast.makeText(getActivity(), "id: " + id + "U_id: " + U_id, Toast.LENGTH_SHORT).show();
+			Toast.makeText(getActivity(), "success" + id, Toast.LENGTH_SHORT).show();
+			Intent wakeupBroadCastList = new Intent();
+			wakeupBroadCastList.setAction("com.notepad.populate_Details_list");
+			getActivity().sendBroadcast(wakeupBroadCastList);
+			
+		}
+		 
+	     //Log.d("New", "insert data \t id: " + id + " \t U_id: " + U_id);
 	    
-	    Log.d("New", "insert data \t prefs listviewnumber: " + listviewnumber);
+		
+	    //Log.d("New", "insert data \t prefs listviewnumber: " + listviewnumber);
 	    
-	    Log.d("Test_18", "Insie insert after shared pref:\t" + prefs.getInt(Integer.toString(listviewnumber), 0));
+	    
 	    
 	    //MainActivity.setNextValue(nextvalue_global);
 	    //Log.d("New", "insert data \t Nextvalue is set in Mainactivity");
-	    Log.d("Test", "inside insert of FN\t nextvalue_global" + prefs.getInt(Integer.toString(listviewnumber),0) + "listvienumber\t"+ listviewnumber + "hello");
-		if(id < 0){
-			Log.d("Error", "error");
-			Toast.makeText(getActivity(), "Error" + id, Toast.LENGTH_SHORT).show();
-		}
-		else
-		{
-			Toast.makeText(getActivity(), "success" + id, Toast.LENGTH_SHORT).show();
-		}
+	    //Log.d("Test", "inside insert of FN\t nextvalue_global" + prefs.getInt(Integer.toString(listviewnumber),0) + "listvienumber\t"+ listviewnumber + "hello");
 		
 		
 		//Update the list view in fragment details:
-		A1interface.changelistView(Title);
+		//A1interface.changelistView(Title);
+		
+		
 		
 	}
 
+	public void GetTextandTitleForGivenIndex(int int_U_id){
+		Log.d("Test","inside GetTextAndTitle.." + "\t int_U_id: " + int_U_id);
+		String TitleAndText = dbhelperadapter.getNotePadText(int_U_id);
+		Log.d("Test_string","inside GetTextAndTitle.." + "\t TitleandText " + TitleAndText);
+		String[] TitleAndText1 = TitleAndText.split(";");
+		Log.d("Test","inside GetTextAndTitle.." + "\t Title: " + TitleAndText1[0] + "\t Text: " + TitleAndText1[1] );
+		Notepadtitle.setText(TitleAndText1[0]);
+		Title_from_Db = TitleAndText1[0];
+		Notepadtext.setText(TitleAndText1[1]);
+		Note_from_Db = TitleAndText1[1];
+	}
+	
 	
 	public interface AfterInsertDataInterface{
 		public void changelistView(String Title);
@@ -164,6 +221,7 @@ public class FragmentNotePad extends Fragment {
 	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onActivityCreated(savedInstanceState);
+		GetTextandTitleForGivenIndex(0);
 		/*Log.d("Activity1_fragmentdetails", "onActivitycreated " + this.toString() + " activityname " + getActivity().toString());
 		
 		if(listviewnumber == -1)

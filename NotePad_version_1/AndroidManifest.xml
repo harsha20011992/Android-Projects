@@ -28,6 +28,14 @@
             android:label="@string/app_name" >
            </activity>
         
+        <receiver android:name="DetailsListBroadCastListener">
+          <intent-filter>
+          <action android:name="com.notepad.populate_Details_list">
+          </action>
+          </intent-filter>
+      </receiver>
+        
+        
     </application>
 
 </manifest>
