@@ -8,7 +8,7 @@
         android:id="@+id/notepadtitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="EditText"
+        android:text="Enter your title here"
         android:background="@android:color/transparent"
         android:gravity="center" />
 
@@ -23,9 +23,11 @@
             android:id="@+id/note_edit_text"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:text="Enter your note here"
             android:layout_weight="1"
             android:background="@android:color/transparent"
             android:gravity="top"
+            
             android:inputType="textMultiLine"
             android:singleLine="false" />
             

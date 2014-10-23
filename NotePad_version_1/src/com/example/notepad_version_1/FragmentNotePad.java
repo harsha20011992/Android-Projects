@@ -43,6 +43,7 @@ public class FragmentNotePad extends Fragment {
 			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		listviewnumber = -1;
+		isTransactionviaChangeText = false;
 		dbhelperadapter = new DataBaseHelperAdapter(getActivity());
 		Log.d("Activity1_fragmentdetails", "oncreateview" + this.toString() + "activityname " + getActivity().toString());
 		
@@ -175,7 +176,7 @@ public class FragmentNotePad extends Fragment {
 					editor.putInt("NextValue", nextvalue_global + 1);
 				    editor.commit();
 				    Log.d("Test_Value_insert_edit_not_via_changeText", "After Insert into prefs \t " + "Key(listview): " + listviewnumber + "vaue(NextValue): " + prefs.getInt(Integer.toString(listviewnumber), 0));
-				    
+				    isTransactionviaChangeText = true;
 				}
 				else{
 				id = dbhelperadapter.insertData(prefs.getInt(Integer.toString(listviewnumber), 0),Title, Text);
@@ -204,6 +205,8 @@ public class FragmentNotePad extends Fragment {
 			//Toast.makeText(getActivity(), "id: " + id + "U_id: " + U_id, Toast.LENGTH_SHORT).show();
 			Toast.makeText(getActivity(), "success" + id, Toast.LENGTH_SHORT).show();
 			Intent wakeupBroadCastList = new Intent();
+			wakeupBroadCastList.putExtra("listviewnumber", listviewnumber);
+			CustomCursorAdapter.setSelectedItem(listviewnumber);
 			wakeupBroadCastList.setAction("com.notepad.populate_Details_list");
 			getActivity().sendBroadcast(wakeupBroadCastList);
 			

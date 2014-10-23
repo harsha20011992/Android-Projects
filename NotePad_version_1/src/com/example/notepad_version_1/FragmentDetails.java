@@ -7,11 +7,10 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
@@ -33,151 +32,38 @@ import android.widget.ListView;
 public class FragmentDetails extends Fragment{
 
 	static ListView l1;
-	Button addNotes;
-	Communicator communicator;
+	private Button addNotes;
+	private Communicator communicator;
 	static ArrayAdapter<String> NotesName;
 	static ArrayList<String> NotesStringArray;
-	DataBaseHelperAdapter dbhelperadapter;
-	SQLiteDatabase sqldatabase;
-	SimpleCursorAdapter c;
-	Cursor cursor;
-	SharedPreferences prefs;
+	private DataBaseHelperAdapter dbhelperadapter;
+	CustomCursorAdapter c;
 	DetailsListBroadCastListener Dbroadcast1;
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		
-		Log.d("Activity1_fragmentdetails", "oncreateview" + this.toString() + "activityname " + getActivity().toString());
-		View view = inflater.inflate(R.layout.fragment_main,container,false);
-		addNotes = (Button) view.findViewById(R.id.addButton);
-		l1 = (ListView) view.findViewById(R.id.listView1);
-		NotesStringArray = new ArrayList<String>();
-		//NotesStringArray[0] = "hello";
-		NotesName = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,NotesStringArray);
-		
-		dbhelperadapter = new DataBaseHelperAdapter(getActivity());
-		l1.setAdapter(NotesName);
-		Dbroadcast1 = new DetailsListBroadCastListener();
-		l1.setOnItemClickListener(new OnItemClickListener() {
-	    
-		
-			
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View arg1, int index,
-					long arg3) {
-				// TODO Auto-generated method stub
-				communicator.respond(index,0);
-			}
-		});
-		return view;
+	Cursor cursor;
+	
+	public interface Communicator{
+		public void respond(int index,int listviewsize);
 	}
 	
 	
+	
+	public FragmentDetails(){
+		Dbroadcast1 = new DetailsListBroadCastListener();
+		Dbroadcast1.setFragment(this);
+		Log.d("Test_workFlow","constructor called for fragment " + StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
+	}
 	
 	public Communicator getComm() {
 		return communicator;
 	}
-
-
-
+	
 	public void setComm(Communicator comm) {
 		communicator = comm;
 	}
-
-
-
-	public interface Communicator{
-		public void respond(int index,int listviewsize);
-	}
-
 	
-	
-	
-
-
-	@Override
-	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-		// TODO Auto-generated method stub
-		super.onActivityCreated(savedInstanceState);
-		Dbroadcast1.setFragment(this);
-		
-		Log.d("Activity1_fragmentdetails", "onActivitycreated " + this.toString() + " activityname " + getActivity().toString());
-		//communicator.respond(-1, l1.getCount() );
-		Boolean requestFocusforfragment1 = getActivity().findViewById(R.id.fragment1).requestFocus();
-		Log.d("Test_Requestfocus", "Boolean Value: " + requestFocusforfragment1 );
-		addNotes.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				Log.d("Test_18", "on add button click \t l1 count:\t" + Integer.toString(l1.getCount()));
-				Log.d("New", "on add button click\t list count: " + Integer.toString(l1.getCount()));
-				communicator.respond(-1,l1.getCount());
-				
-				
-			}
-		
-		});
-		
-		
-		
-		cursor = dbhelperadapter.getAllCursorDetails();
-		if(cursor!=null){
-			String[]	from = dbhelperadapter.returnColumns();
-			int[] to = {R.id.cursor_TextU_id,R.id.cursor_TextTitle,R.id.cursor_TextNote};
-			c = new SimpleCursorAdapter(getActivity(), R.layout.detailscursorlayout, cursor, from, to, 0);
-			l1.setAdapter(c);
-			c.notifyDataSetChanged();	
-		}
-		
-		l1.setOnItemLongClickListener(new OnItemLongClickListener() {
-
-			@Override
-			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-					int index, long arg3) {
-				// TODO Auto-generated method stub
-				final int index1 = index;
-				//Toast.makeText(getActivity(), "You Pressed item" + (index +1) , Toast.LENGTH_SHORT).show();
-				AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
-				builder1.setMessage("Do you want to delete this notepad");
-				builder1.setCancelable(true);
-				builder1.setPositiveButton("YES", new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int arg1) {
-						// TODO Auto-generated method stub
-						Log.d("Test_dialog","Clicked yes: " + index1);
-						DeleteCorrespondingRow(index1);
-						
-						dialog.cancel();
-					}
-
-					
-				});
-				
-				
-				builder1.setNegativeButton("No", new DialogInterface.OnClickListener() {
-					
-					@Override
-					public void onClick(DialogInterface dialog, int arg1) {
-						// TODO Auto-generated method stub
-						Log.d("Test_dialog","Clicked No");
-						dialog.cancel();
-					}
-				});
-				
-				AlertDialog dialog1 = builder1.create();
-				dialog1.show();
-				
-				return false;
-			}
-		});
-		
-	}
-
 	private void DeleteCorrespondingRow(int index1) {
 		// TODO Auto-generated method stub
+		SharedPreferences prefs;
 		prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
 		
 		if(prefs.contains(Integer.toString(index1)))
@@ -198,115 +84,230 @@ public class FragmentDetails extends Fragment{
 		}
 	}
 
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-		// TODO Auto-generated method stub
-		super.onActivityResult(requestCode, resultCode, data);
-		Log.d("Activity1_fragmentdetails", "onActivityresult " + this.toString() + " activityname " + getActivity().toString());
-		
-	}
-
-
-
+	
 	@Override
 	public void onAttach(Activity activity) {
 		// TODO Auto-generated method stub
 		super.onAttach(activity);
-		Log.d("Activity1_fragmentdetails", "onActivityattach " + this.toString() + " activityname " + getActivity().toString());
+		Log.d("Test_WorkFlow", "\t Inside onAttach of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
 	}
-
-
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
-		Log.d("Activity1_fragmentdetails", "oncreate " + this.toString() + " activityname " + getActivity().toString());
+		Log.d("Test_WorkFlow", "\t Inside onCreate of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
 	}
-
-
-
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		super.onDestroy();
-		Log.d("Activity1_fragmentdetails", "onDestroy " + this.toString() + " activityname " + getActivity().toString());
-	}
-
-
-
-	@Override
-	public void onDestroyView() {
-		// TODO Auto-generated method stub
-		super.onDestroyView();
-		Log.d("Activity1_fragmentdetails", "onDestroyview " + this.toString() + " activityname " + getActivity().toString());
-	}
-
-
-
-	@Override
-	public void onDetach() {
-		// TODO Auto-generated method stub
-		super.onDetach();
-		Log.d("Activity1_fragmentdetails", "onDetach " + this.toString() + " activityname " + getActivity().toString());
-	}
-
-
-
-	@Override
-	public void onHiddenChanged(boolean hidden) {
-		// TODO Auto-generated method stub
-		super.onHiddenChanged(hidden);
-		Log.d("Activity1_fragmentdetails", "onHiddenchanged " + this.toString() + " activityname " + getActivity().toString());
-	}
-
-
-
 	
-
-
-
+	
 	@Override
-	public void onPause() {
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
-		super.onPause();
-		Log.d("Activity1_fragmentdetails", "onPause " + this.toString() + " activityname " + getActivity().toString());
+		Log.d("Test_WorkFlow", "\t Inside oncreateview of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
+		
+		View view = inflater.inflate(R.layout.fragment_main,container,false);
+		addNotes = (Button) view.findViewById(R.id.addButton);
+		l1 = (ListView) view.findViewById(R.id.listView1);
+		//NotesStringArray = new ArrayList<String>();
+		//NotesName = new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1,NotesStringArray);
+		
+		dbhelperadapter = new DataBaseHelperAdapter(getActivity());
+		//l1.setAdapter(NotesName);
+		l1.setOnItemClickListener(new OnItemClickListener() {
+	    
+		
+			
+			@Override
+			public void onItemClick(AdapterView<?> adapterView, View arg1, int index,
+					long arg3) {
+				// TODO Auto-generated method stub
+				for (int j = 0; j < adapterView.getChildCount(); j++)
+			           adapterView.getChildAt(j).setBackgroundColor(Color.TRANSPARENT);
+				
+				arg1.setBackgroundColor(Color.YELLOW);
+				
+				CustomCursorAdapter.setSelectedItem(index);
+				
+				communicator.respond(index,0);
+			}
+		});
+		return view;
 	}
+	
+	@Override
+	public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+		// TODO Auto-generated method stub
+		super.onActivityCreated(savedInstanceState);
+		
+		
+		Log.d("Test_WorkFlow", "\t Inside onActivityCreated of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
+		//communicator.respond(-1, l1.getCount() );
+		//Boolean requestFocusforfragment1 = getActivity().findViewById(R.id.fragment1).requestFocus();
+		//Log.d("Test_Requestfocus", "Boolean Value: " + requestFocusforfragment1 );
+		addNotes.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View arg0) {
+				// TODO Auto-generated method stub
+				Log.d("Test_Value", "on addNotes button click \t l1 count:\t" + Integer.toString(l1.getCount()));
+				communicator.respond(-1,l1.getCount());
+				
+				
+			}
+		
+		});
+		
+		
+		
+		cursor = dbhelperadapter.getAllCursorDetails();
+		if(cursor!=null){
+			String[]	from = dbhelperadapter.returnColumns();
+			int[] to = {R.id.cursor_TextU_id,R.id.cursor_TextTitle,R.id.cursor_TextNote};
+			c = new CustomCursorAdapter(getActivity(), cursor, 0);
+			l1.setAdapter(c);
+			c.notifyDataSetChanged();	
+		}
+		
+		l1.setOnItemLongClickListener(new OnItemLongClickListener() {
 
+			@Override
+			public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
+					int index, long arg3) {
+				// TODO Auto-generated method stub
+				String[] items = {"delete","edit"};
+				final int index1 = index;
+				//Toast.makeText(getActivity(), "You Pressed item" + (index +1) , Toast.LENGTH_SHORT).show();
+				AlertDialog.Builder builder1 = new AlertDialog.Builder(getActivity());
+				//builder1.setMessage("Do you want to delete this notepad");
+				builder1.setItems(items, new DialogInterface.OnClickListener() {
+					
+					@Override
+					public void onClick(DialogInterface outer_dialog, int outer_item_number) {
+						// TODO Auto-generated method stub
+						
+						Log.d("Test_Value","you have clicked " + outer_item_number  + "for index " + index1);
+						
+						if(outer_item_number == 0){
+							
+							AlertDialog.Builder builder2 = new AlertDialog.Builder(getActivity());
+							builder2.setMessage("Do you want to delete this notepad");
+							builder2.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface inner_dialog, int number) {
+									// TODO Auto-generated method stub
+									
+									DeleteCorrespondingRow(index1);
+									inner_dialog.cancel();
+									
+								}
+							});
+							builder2.setNegativeButton("No", new DialogInterface.OnClickListener() {
+								
+								@Override
+								public void onClick(DialogInterface inner_dialog, int arg1) {
+									// TODO Auto-generated method stub
+								inner_dialog.cancel();
+								}
+							});
+							builder2.setCancelable(true);
+							AlertDialog dialog2 = builder2.create();
+							dialog2.show();
+					
+							
+							
+						}
+							}
+				});
+				builder1.setCancelable(true);					
+				AlertDialog dialog1 = builder1.create();
+				dialog1.show();
+				
+				return false;
+			}
+		});
+		
+	}
+	
+	
+	@Override
+	public void onStart() {
+		// TODO Auto-generated method stub
+		super.onStart();
+		Log.d("Test_WorkFlow", "\t Inside onStart of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
+	}
 
 
 	@Override
 	public void onResume() {
 		// TODO Auto-generated method stub
 		super.onResume();
-		Log.d("Activity1_fragmentdetails", "onResume " + this.toString() + " activityname " + getActivity().toString());
+		Log.d("Test_WorkFlow", "\t Inside onResume of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
+		Log.d("Test_WorkFlow", "\t"  + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
 	}
+	
 
-
+//Fragment is active after onresume is called
+	
 
 	@Override
-	public void onSaveInstanceState(Bundle outState) {
+	public void onPause() {
 		// TODO Auto-generated method stub
-		super.onSaveInstanceState(outState);
-		Log.d("Activity1_fragmentdetails", "onsaveinstancestate " + this.toString() + " activityname " + getActivity().toString());
+		super.onPause();
+		Log.d("Test_WorkFlow", "\t Inside onPause of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
 	}
-
-
-
-	@Override
-	public void onStart() {
-		// TODO Auto-generated method stub
-		super.onStart();
-		Log.d("Activity1_fragmentdetails", "onstart " + this.toString() + " activityname " + getActivity().toString());
-	}
-
 
 
 	@Override
 	public void onStop() {
 		// TODO Auto-generated method stub
 		super.onStop();
-		Log.d("Activity1_fragmentdetails", "onstop " + this.toString() + " activityname " + getActivity().toString());
+		Log.d("Test_WorkFlow", "\t Inside onStop of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
+	}
+	
+	/*once the layout returns to the layour from the backstack, it moves from onDestroyview()
+	to onCreateView()*/
+
+	@Override
+	public void onDestroyView() {
+		// TODO Auto-generated method stub
+		super.onDestroyView();
+		Log.d("Test_WorkFlow", "\t Inside onDestroyView of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
+	}
+	
+	
+	@Override
+	public void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		Log.d("Test_WorkFlow", "\t Inside onDestroy of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
+	}
+
+	@Override
+	public void onDetach() {
+		// TODO Auto-generated method stub
+		super.onDetach();
+		Log.d("Test_WorkFlow", "\t Inside onDetach of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
+	}
+
+
+/*Below three not mentioned in the activity cycle but has to be seen from the workflow*/
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		// TODO Auto-generated method stub
+		super.onHiddenChanged(hidden);
+		Log.d("Test_WorkFlow", "\t Inside onHiddenChanged of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
+	}
+
+
+
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		super.onSaveInstanceState(outState);
+		Log.d("Test_WorkFlow", "\t Inside onSaveInstance of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
 	}
 
 
@@ -315,7 +316,7 @@ public class FragmentDetails extends Fragment{
 	public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 		// TODO Auto-generated method stub
 		super.onViewCreated(view, savedInstanceState);
-		Log.d("Activity1_fragmentdetails", "onViewCreated " + this.toString() + " activityname " + getActivity().toString());
+		Log.d("Test_WorkFlow", "\t Inside onViewCreated of " + "Fragment: "+ StringSplitter.getReadablFragmentName(this) + " \t BaseActivityName: " + StringSplitter.getReadableActivityName(getActivity()));
 	}
 
 
